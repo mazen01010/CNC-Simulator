@@ -1,6 +1,8 @@
+package sample;
+
 public class Machine {
     // Created by Mazen
-    
+
         private static boolean M00 = false; // Program pause
         private static boolean M02 = true; // Program stop
         private static boolean M03 = false; // Spindle On clockwise
