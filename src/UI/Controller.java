@@ -52,7 +52,7 @@ public class Controller{
         System.out.println("Program Stopped");
     }
 
-    public  void commandfield(){
+    public  void commandField(){
         System.out.println("start method");
     }
 
