@@ -39,6 +39,7 @@ public class Controller{
     public void StartClicked(){
 
         System.out.println("Started");
+        System.out.println("Hi Im Wiki");
 
     }
 
