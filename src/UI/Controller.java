@@ -12,6 +12,8 @@ import javafx.scene.paint.*;
 import javafx.scene.canvas.*;
 import javafx.scene.text.TextAlignment;
 
+import static javafx.geometry.VPos.CENTER;
+
 public class Controller{
 
 
@@ -30,7 +32,7 @@ public class Controller{
         //gc.setTextAlign(TextAlignment.CENTER);
         //gc.setTextBaseline(VPos.CENTER);
         gc.setStroke(Color.GREEN);
-        gc.strokeText("+",canvas.getWidth()/2,canvas.getHeight()/2);
+        gc.strokeText("+",canvas.getWidth()/2 -4,canvas.getHeight()/2 + 5);
 
 
 

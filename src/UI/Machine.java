@@ -1,8 +1,7 @@
 package UI;
 
-import org.jetbrains.annotations.Contract;
-
 public class Machine {
+
     // Created by Mazen
 
         private static boolean interpolation = false;
@@ -161,7 +160,7 @@ public class Machine {
         static double getF(){
             return F;
          }
-         
+
         
 }
 
