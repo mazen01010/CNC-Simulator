@@ -3,6 +3,7 @@ package UI;
 public class Machine {
     // Created by Mazen
 
+        private static boolean interpolation = false;
         private static boolean M00 = false; // Program pause
         private static boolean M02 = true; // Program stop
         private static boolean M03 = false; // Spindle On clockwise
@@ -13,8 +14,9 @@ public class Machine {
         private static boolean M13 = false; // Spindle On clockwise with coolant
         private static boolean M14 = false; // Spindle On Counter clockwise with coolant
         private static double F = 0; // Feed Rate
-        private static final double MaxFeedRate = 8000; // Max Feed Rate
-        private static final double MinFeedTate = 4000; // Min Feed Tate
+        private static final double MaxFeedRate = 4000; // Max Feed Rate G00
+        private static final double MaxFeedRate1 = 3000; // Max Feed Rate, interpolating with cooling
+        private static final double MaxFeedRate2 = 2000; // Max Feed Rate, interpolating without cooling
 
 
         static void setM00(boolean ON){
@@ -105,11 +107,17 @@ public class Machine {
             }else M14 = false; setM09(true);
         }
         static void setF(double FN){
-            if(FN > MaxFeedRate && !M05){
+            if(FN > MaxFeedRate ){
                 System.out.println("Feed Rate should not be greater than "+ MaxFeedRate);
-            }else if(FN < MinFeedTate && !M05){
-                System.out.println("Feed Rate should not be smaller than " + MinFeedTate);
+            }else if(FN > MaxFeedRate2 && !M08) {
+                System.out.println("Feed Rate without cooling should not be greater than " + MaxFeedRate2);
+            }else if (FN > MaxFeedRate1 && interpolation ){
+                System.out.println("Feed Rate with cooling should not be greater than " + MaxFeedRate1);
             }else F = FN;
         }
+
+
+
+        
 }
 
