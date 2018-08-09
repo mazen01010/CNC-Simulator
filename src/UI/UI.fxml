@@ -17,7 +17,7 @@
          </children>
       </HBox>
       <TextArea layoutX="14.0" layoutY="116.0" prefHeight="472.0" prefWidth="212.0" />
-      <Label fx:id="ComandLabel" layoutX="14.0" layoutY="95.0" prefHeight="21.0" prefWidth="212.0" text="Comands " />
+      <Label fx:id="CommandLabel" layoutX="14.0" layoutY="95.0" prefHeight="21.0" prefWidth="212.0" text="Commands " />
       <Canvas fx:id="canvas" height="500.0" layoutX="236.0" layoutY="14.0" width="554.0" AnchorPane.bottomAnchor="89.0" AnchorPane.leftAnchor="236.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="14.0" />
    </children>
 </AnchorPane>
