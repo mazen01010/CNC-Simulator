@@ -1,5 +1,7 @@
 package UI;
 
+import org.jetbrains.annotations.Contract;
+
 public class Machine {
     // Created by Mazen
 
@@ -115,9 +117,51 @@ public class Machine {
                 System.out.println("Feed Rate with cooling should not be greater than " + MaxFeedRate1);
             }else F = FN;
         }
+        static boolean getInterpolation(){
+            return interpolation;
+        }
+
+        static boolean getM00(){
+            return M00;
+        }
+
+        static boolean getM02(){
+            return M02;
+        }
+
+        static boolean getM03(){
+            return M03;
+        }
+
+        static boolean getM04(){
+            return M04;
+        }
+
+        static boolean getM05(){
+            return M05;
+        }
+
+        static boolean getM08(){
+            return M08;
+        }
+
+        static boolean getM09(){
+            return M09;
+        }
+
+        static boolean getM13(){
+            return M13;
+        }
 
 
+        static boolean getM14(){
+            return M14;
+        }
 
+        static double getF(){
+            return F;
+         }
+         
         
 }
 
