@@ -34,10 +34,28 @@ public class Controller{
         gc.setStroke(Color.GREEN);
         gc.strokeText("+",canvas.getWidth()/2 -4,canvas.getHeight()/2 + 5);
 
+    }
 
+    public void StartClicked(){
 
+        System.out.println("Started");
 
     }
+
+    public void PauseClicked(){
+
+        System.out.println("Paused");
+    }
+
+    public void StopClicked(){
+
+        System.out.println("Program Stopped");
+    }
+
+    public  void commandfield(){
+        System.out.println("start method");
+    }
+
 
 
 }
