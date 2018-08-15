@@ -47,87 +47,49 @@ public class Controller  {
         canvas.setLayoutX(canvas.getWidth()/2);
         canvas.setLayoutY(canvas.getHeight()/2);
 
-
-        Arc arc = new  Arc(15,36,69,36,36,8);
-        Point2D point2D = new Point2D(52,25);
-        gc.strokeLine(point2D.getX(),point2D.getY(),point2D.getX(),point2D.getY());
-
-
-
-
-        //gc.setStroke(Color.RED);
-        //gc.strokeArc(arc.getLayoutX(),arc.getLayoutY(),arc.getRadiusX(),arc.getRadiusY(),arc.getStartAngle(),arc.getLength(), ArcType.OPEN);
-
-
-
         gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-        gc.setFill(Color.RED);
-       // gc.fillOval(canvasWidth,canvasHeight,10,10);
         gc.stroke();
 
-
-        //canvas.getGraphicsContext2D().arcTo(15,175,115,151,15);
-        canvas.getGraphicsContext2D().strokeArc(15,15,50,56,86,66, ArcType.OPEN);
-        gc.strokeArc(115,115,550,556,836,66, ArcType.OPEN);
-       // gc.beginPath();
-        //gc.arcTo(15,186,572,52,557);
-        //gc.stroke();
-
+        gc.setStroke(Color.RED);
         gc.strokeOval(canvas.getWidth()/2,canvas.getHeight()/2,10,10);
         gc.setStroke(Color.GREEN);
         gc.strokeText("+",canvas.getWidth()/2 +1,canvas.getHeight()/2 + 8);
-        gc.arcTo(5,55,65,78,63);
-
-
-        Path path = new Path();
-
-        MoveTo moveTo = new MoveTo();
-        moveTo.setX(250.0);
-        moveTo.setY(250.0);
-        ArcTo arcTo = new ArcTo();
-
-        //setting properties of the path element arc
-        arcTo.setX(300.0);
-        arcTo.setY(50.0);
-
-        arcTo.setRadiusX(50.0);
-        arcTo.setRadiusY(50.0);
+       // Arc arc = new  Arc(15,36,69,36,36,8);
+        //Point2D point2D = new Point2D(52,25);
+        //gc.strokeLine(point2D.getX(),point2D.getY(),point2D.getX(),point2D.getY());
 
 
 
 
+        gc.setStroke(Color.BLACK);
+        gc.strokeArc(115,115,550,556,836,66, ArcType.OPEN);
 
 
+        G02 ge = new G02(50,50,0,0.5);
 
 
+        for (int i =0 ; i< ge.arcs.size(); i++){
 
+            gc.setStroke(Color.RED);
+            gc.strokeArc(ge.arcs.get(i).getCenterX(),ge.arcs.get(i).getCenterY(),ge.arcs.get(i).getRadiusX(),ge.arcs.get(i).getRadiusY(),ge.arcs.get(i).getStartAngle(),ge.arcs.get(i).getLength(),ge.arcs.get(i).getType());
+            i++;
 
-
-       /* PathTransition transition = new PathTransition();
-
-        transition.setDuration(Duration.seconds(2));
-       transition.setPath(path);
-
-       transition.setCycleCount(Animation.INDEFINITE);
-        transition.play();*/
-
+        }
+        gc.strokeArc(ge.arcs.get(1).getCenterX(),ge.arcs.get(1).getCenterY(),ge.arcs.get(1).getRadiusX(),ge.arcs.get(1).getRadiusY(),ge.arcs.get(1).getStartAngle(),ge.arcs.get(1).getLength(),ge.arcs.get(1).getType());
 
 
 
     }
 
-     void moveCanvas(int x, int y) {
-
-    }
-    private void drawDShape() {
-
-    }
 
     public void StartClicked(){
 
         System.out.println("Started");
         System.out.println("Hi Im Wiki");
+
+        commandField.getText();
+        System.out.println(commandField.getText());
 
     }
 
