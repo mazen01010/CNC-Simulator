@@ -161,6 +161,18 @@ public class Machine {
             return F;
          }
 
+         static double getMaxFeedRate(){
+            return MaxFeedRate;
+         }
+
+         static double getMaxFeedRate1(){
+            return MaxFeedRate1;
+         }
+
+         static double getMaxFeedRate2(){
+            return MaxFeedRate2;
+         }
+
         
 }
 

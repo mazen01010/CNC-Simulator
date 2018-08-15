@@ -9,16 +9,15 @@ import static java.lang.Math.*;
 
 public class geometric {
 
-    public static final double homeX = Controller.canvasWidth;
-    public static final double homeY = Controller.canvasHeight;
-    public static double X = Controller.canvasWidth;
-    public static double Y = Controller.canvasHeight;
+    public static final double homeX = 0;
+    public static final double homeY = 0;
+    public static double X =0;
+    public static double Y = 0;
 
 
     public  void G00(double X, double Y){
         Machine.getMaxFeedRate();
-        X = X + Controller.canvasWidth;
-        Y = Controller.canvasHeight - Y;
+
 
 
         geometric.X = X;
@@ -37,8 +36,6 @@ public class geometric {
 
         ArrayList<Line> lines = new ArrayList<Line>();
 
-        X = X + Controller.canvasWidth;
-        Y = Controller.canvasHeight - Y;
 
         if (X > geometric.X) {
             double incY = (Y - geometric.Y) / (X - geometric.X);
@@ -114,92 +111,53 @@ public class geometric {
      //return new LineTo(geometric.X, geometric.Y);
     }
 
-    public  void G02(double X, double Y, double R) {
-        if (Machine.getM08()) {
-            Machine.setF(Machine.getMaxFeedRate1());
-        } else Machine.setF(Machine.getMaxFeedRate2());
 
-        //double R = abs( Math.sqrt( (X - I)*(X - I) + (Y-J)*(Y-J) ));
-        //double startAngle = atan2(geometric.Y - J, geometric.X- I)*180/Math.PI;
-        //double length = atan2(Y-J,X-J);
+    public void G02 (double Xe, double Ye, double I, double J) {
+
+
+
         ArrayList<Point2D> points = new ArrayList<>();
-        //X = X + Controller.canvasWidth;
-        //Y = Controller.canvasHeight - Y;
-        geometric.X = geometric.X - Controller.canvasWidth;
-        geometric.Y = geometric.Y - Controller.canvasHeight;
 
-        int counter = 0;
-        double incY = geometric.Y;
+        double Xc = geometric.X - I;
+        double Yc = geometric.Y - J;
 
-        if (X - geometric.X >= Y - geometric.Y && Y- geometric.Y >=0 ) {
+        double R = abs(sqrt( (Xe - Xc )*(Xe - Xc) + (Ye - Yc)*(Ye - Yc)));
 
-
-            for (double i = geometric.X; i <= X; i++) {
-                Point2D point2D = new Point2D(geometric.X + Controller.canvasWidth,Controller.canvasHeight- incY);
-                points.add(counter, point2D);
-                geometric.X++;
-                incY = sqrt(R * R - geometric.X * geometric.X);
-                geometric.Y = incY;
-
-            }
-
-            if (X - geometric.X >= Y - geometric.Y && Y - geometric.Y < 0) {
+        double theta1 = toDegrees(atan2(geometric.Y, geometric.X));
+        double theta2 = toDegrees(atan2(Ye,Xe));
+        double theta;
+        int counter= 0;
 
 
-                double incX = geometric.X;
-
-                for (double i = geometric.Y; i >= Y; i--) {
-                    Point2D point2D = new Point2D(incX + Controller.canvasWidth, Controller.canvasHeight - geometric.Y);
+        if (theta1 < theta2){
+        for (double i = theta1; i <= theta2; i++) {
+            theta = i;
+            geometric.X = R * cos(theta) + Xc;
+            geometric.Y = R * sin(theta) + Yc;
+            Point2D point2D = new Point2D(geometric.X, geometric.Y);
+            points.add(counter, point2D);
+        }
+        }else {
+            for (double i = theta1; i >= theta2; i++) {
+                if (i == 360) {
+                    i = 0;
+                    for (i = 0; i <= theta2; i++) {
+                        theta = i;
+                        geometric.X = R * cos(theta) + Xc;
+                        geometric.Y = R * sin(theta) + Yc;
+                        Point2D point2D = new Point2D(geometric.X, geometric.Y);
+                        points.add(counter, point2D);
+                    }
+                }
+                    theta = i;
+                    geometric.X = R * cos(theta) + Xc;
+                    geometric.Y = R * sin(theta) + Yc;
+                    Point2D point2D = new Point2D(geometric.X, geometric.Y);
                     points.add(counter, point2D);
-                    geometric.Y--;
-                    incX = sqrt(R * R - geometric.Y * geometric.Y);
-                    geometric.X = incX;
-                }
-            }
-            if (X- geometric.X < Y - geometric.Y){
-                int counter1 =0;
-
-                for (double i = geometric.X ; i <= 2*R; i++){
-                    Point2D point2D = new Point2D(geometric.X + Controller.canvasWidth, Controller.canvasHeight - geometric.Y);
-                    points.add(counter1, point2D);
-
-                    geometric.X++;
-                    geometric.Y = sqrt(R*R - geometric.X * geometric.X);
-                }
-
-                for (double i = 2*R  ; i >= X; i-- ){
-                    Point2D point2D = new Point2D(geometric.X + Controller.canvasWidth , Controller.canvasHeight - geometric.Y);
-                    points.add(counter1, point2D);
-
-                    geometric.X--;
-                    geometric.Y = -sqrt(R*R - geometric.X* geometric.X);
                 }
             }
 
 
         }
-
-
-        geometric.X = X;
-        geometric.Y = Y;
-       // return new Arc(geometric.X ,geometric.Y ,R ,R, startAngle , length);
-    }
-
-    public double atan(double X, double Y , double I, double J){
-        double angle;
-        if (Y - J >0){
-            if (X - I >= Y - J){
-                angle = atan2(Y-J,X-I);
-            }else if (X-I <= (Y-J)*(-1) ){
-                angle = atan2(Y-J,X-I) + Math.PI;
-            }else angle = Math.PI/2 - atan2(Y-J,X-I);
-        }else
-            if (X-I >= (Y-J)*(-1) ){
-                angle = atan2(Y-J,X-I);
-            }else if (X-I <= Y-J){
-                angle = atan2(Y-J,X-I) - PI;
-            }else angle = -atan2(X-I,Y-J) - PI/2;
-        return angle;
-    }
 
 }
