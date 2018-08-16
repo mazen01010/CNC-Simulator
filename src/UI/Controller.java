@@ -20,6 +20,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
+import java.util.ArrayList;
 import java.util.Vector;
 
 import static javafx.geometry.VPos.CENTER;
@@ -78,8 +79,6 @@ public class Controller  {
         }
         gc.strokeArc(ge.arcs.get(1).getCenterX(),ge.arcs.get(1).getCenterY(),ge.arcs.get(1).getRadiusX(),ge.arcs.get(1).getRadiusY(),ge.arcs.get(1).getStartAngle(),ge.arcs.get(1).getLength(),ge.arcs.get(1).getType());
 
-
-
     }
 
 
@@ -87,8 +86,50 @@ public class Controller  {
 
         System.out.println("Started");
         System.out.println("Hi Im Wiki");
+        ArrayList<String> strings = new ArrayList<>();
 
-        commandField.getText();
+        double X;
+        double Y;
+        double I;
+        double J;
+        double F;
+
+        String str = commandField.getText();
+
+        for (String strs: str.toUpperCase().split(" ")) {
+            strings.add(strs);
+        }
+        for (int i = 0 ; i <= strings.size(); i++){
+
+            String string = strings.get(i);
+
+            switch (string){
+
+                case "G00": G00 g00 = new G00();
+                case "G01": G01 g01 = new G01();
+                //case "G02": //G02 g02 = new G02();
+                case "X":;
+                case "Y":;
+                case "I":;
+                case "J":;
+                case "F":;
+                case "M00": Machine.setM00(true);
+                case "M02": Machine.setM02(true);
+                case "M03": Machine.setM03(true);
+                case "M04": Machine.setM04(true);
+                case "M05": Machine.setM05(true);
+                case "M08": Machine.setM08(true);
+                case "M09": Machine.setM09(true);
+                case "M13": Machine.setM13(true);
+                case "M14": Machine.setM14(true);
+                default: System.out.println("please enter valid expression");
+
+            }
+
+        }
+
+
+
         System.out.println(commandField.getText());
 
     }
