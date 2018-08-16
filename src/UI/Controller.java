@@ -21,6 +21,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Vector;
 
 import static javafx.geometry.VPos.CENTER;
@@ -35,6 +36,8 @@ public class Controller  {
     public Label CommandLabel;
     public Canvas canvas;
     public TextArea commandField;
+
+    public ArrayList<Objects> objects = new ArrayList<>(); // to save objects created when start button is pressed
 
 
 
@@ -85,7 +88,7 @@ public class Controller  {
     public void StartClicked(){
 
         System.out.println("Started");
-        System.out.println("Hi Im Wiki");
+        System.out.println("Hi Im ");
         ArrayList<String> strings = new ArrayList<>();
 
         double X;
@@ -105,6 +108,7 @@ public class Controller  {
 
             switch (string){
 
+                case "N":;
                 case "G00": G00 g00 = new G00();
                 case "G01": G01 g01 = new G01();
                 //case "G02": //G02 g02 = new G02();
