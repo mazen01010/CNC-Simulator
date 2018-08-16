@@ -112,6 +112,7 @@ public class Controller  {
                 case "G00": G00 g00 = new G00();
                 case "G01": G01 g01 = new G01();
                 //case "G02": //G02 g02 = new G02();
+                //case "G03":
                 case "X":;
                 case "Y":;
                 case "I":;
