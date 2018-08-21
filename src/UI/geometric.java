@@ -14,4 +14,5 @@ public class geometric {
     public static double X =0;
     public static double Y = 0;
 
+
 }

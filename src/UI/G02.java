@@ -14,9 +14,13 @@ public class G02 extends geometric {
 
     ArrayList<Arc> arcs = new ArrayList<>();
 
+    static double I;
+    static double J;
+
     public G02 (double Xe, double Ye, double I, double J) {
 
-
+        G02.I = I ;
+        G02.J = J ;
 
 
         double Xc = geometric.X - I;

@@ -10,7 +10,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.Circle;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -31,7 +33,7 @@ public class Controller implements Runnable{
 
 
 
-    public ArrayList<Objects> objects = new ArrayList<>(); // to save objects created when start button is pressed
+    public ArrayList<Commands> commandsArrayList = new ArrayList<>(); // to save objects created when start button is pressed
 
 
     public static final double D = 4;  // diameter.
@@ -97,78 +99,101 @@ public class Controller implements Runnable{
 
 
 
-    public void StartClicked() {
+    public void StartClicked() throws Exception {
 
         System.out.println("Started");
         System.out.println("Hi Im ");
         ArrayList<String> strings = new ArrayList<>();
 
-        double X;
-        double Y;
-        double I;
-        double J;
-        double F;
+
 
         String str = commandField.getText();
 
         for (String strs : str.toUpperCase().split(" ")) {
             strings.add(strs);
-        }/*
-        for (int i = 0; i <= strings.size(); i++) {
+        }
+
+
+
+
+       /* for (int i = 0 ; i <=strings.size(); i++){
+
+            ArrayList<String> subStrings = new ArrayList<>();
 
             String string = strings.get(i);
+            if ( string.contains("N")){
+                for (int j = i+1; j <= strings.size(); j++){
+                    String string1 = strings.get(j);
+                    if (!string1.contains("N")){
+                        subStrings.add(string1);
+                    }else break;
+                }
+                for (int z = 0 ; z<= subStrings.size(); z++){
+                    String substring = strings.get(i).substring(0,0);
+                    Commands command = new Commands();
+                    switch (substring){
 
-            switch (string) {
+                        case "G":
+                            if (substring.contains("00")){
+                                command.setCommand(substring);
+                            }else if (substring.contains("01")){
+                                command.setCommand(substring);
+                            }else if (substring.contains("02")){
+                                command.setCommand(substring);
+                            }else if (substring.contains("03")){
+                                command.setCommand(substring);
+                            }else throw new Exception();
 
-                case "N":
-                    ;
-                case "G00":
-                    G00 g00 = new G00();
-                case "G01":
-                    G01 g01 = new G01();
-                    //case "G02": //G02 g02 = new G02();
-                    //case "G03":
-                case "X":
-                    ;
-                case "Y":
-                    ;
-                case "I":
-                    ;
-                case "J":
-                    ;
-                case "F":
-                    ;
-                case "M00":
-                    Machine.setM00(true);
-                case "M02":
-                    Machine.setM02(true);
-                case "M03":
-                    Machine.setM03(true);
-                case "M04":
-                    Machine.setM04(true);
-                case "M05":
-                    Machine.setM05(true);
-                case "M08":
-                    Machine.setM08(true);
-                case "M09":
-                    Machine.setM09(true);
-                case "M13":
-                    Machine.setM13(true);
-                case "M14":
-                    Machine.setM14(true);
-                default:
-                    System.out.println("please enter valid expression");
+                        case "M":
+                            if (substring.contains("00")){
+                                command.setM00(true);
+                            }else if (substring.contains("02")){
+                                command.setM02(true);
+                            }else if (substring.contains("03")){
+                                command.setM03(true);
+                            }else if (substring.contains("04")){
+                                command.setM04(true);
+                            }else if (substring.contains("05")){
+                                command.setM05(true);
+                            }else if (substring.contains("08")){
+                                command.setM08(true);
+                            }else if (substring.contains("09")){
+                                command.setM09(true);
+                            }else if (substring.contains("13")){
+                                command.setM13(true);
+                            }else if (substring.contains("14")){
+                                command.setM14(true);
+                            }
+
+                        case "X":
+                            command.setX(Double.parseDouble(substring));
+                        case "Y":
+                            command.setY(Double.valueOf(substring));
+                        case "F":
+                            command.setF(Double.valueOf(substring));
+                        case "I":
+                            command.setI(Double.valueOf(substring));
+                        case "J":
+                            command.setJ(Double.valueOf(substring));
+                    }
+                    commandsArrayList.add(command);
+                }
 
             }
-
         }*/
+
+
         System.out.println(commandField.getText());
+
+        //Arc arc = new Arc(658,658,85,85,65,45);
 
         // just for checking... should be deleted after program finished
         Machine.setF(1000);
 
         try {
 
+
+            Circle circle = new Circle(0,0,5);
             timeline = new Timeline(
 
                     new KeyFrame(Duration.seconds(15000 / Machine.getF()),
@@ -200,15 +225,19 @@ public class Controller implements Runnable{
                         D,
                         D
                 );
+                setxs(getxs());
+                setys(getys());
+
                 gc.setStroke(Color.GREEN);
                 gc.strokeLine(canvas.getWidth() / 2 - 1, canvas.getHeight() / 2 + 2, canvas.getWidth() / 2 + 5, canvas.getHeight() / 2 + 2);
                 gc.strokeLine(canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 - 1, canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 + 5);
 
                 gc.strokeText(".", getxs(),getys());
-                
-
             }
+
+
         };
+
         timeline.play();
         timer.start();
 
