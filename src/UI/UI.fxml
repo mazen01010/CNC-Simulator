@@ -18,6 +18,6 @@
       </HBox>
       <TextArea fx:id="commandField" layoutX="14.0" layoutY="116.0" prefHeight="472.0" prefWidth="212.0" />
       <Label fx:id="CommandLabel" layoutX="14.0" layoutY="95.0" prefHeight="21.0" prefWidth="212.0" text="Commands " />
-      <Canvas fx:id="canvas" height="525.0" layoutX="236.0" layoutY="63.0" width="700.0" AnchorPane.bottomAnchor="12.0" AnchorPane.leftAnchor="236.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="63.0" />
+      <Canvas fx:id="canvas" blendMode="DARKEN" height="550.0" layoutX="250.0" width="700.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
    </children>
 </AnchorPane>

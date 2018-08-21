@@ -18,7 +18,9 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("UI.fxml"));
         primaryStage.setTitle("CNC Simulator");
         primaryStage.setScene(new Scene(root, 975, 600));
+
         primaryStage.show();
+
     }
 
     public static void main(String[] args) {

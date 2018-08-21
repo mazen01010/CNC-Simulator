@@ -6,7 +6,6 @@ public class G00 extends geometric {
         Machine.getMaxFeedRate();
 
 
-
         geometric.X = X;
         geometric.Y= Y;
 
