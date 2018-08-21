@@ -86,14 +86,9 @@ public class Controller implements Runnable{
         gc.strokeLine(canvas.getWidth()/2 -1,canvas.getHeight()/2 +2,canvas.getWidth()/2 + 5,canvas.getHeight()/2 +2);
         gc.strokeLine(canvas.getWidth()/2 +2,canvas.getHeight()/2 -1,canvas.getWidth()/2 +2,canvas.getHeight()/2 +5);
 
-        gc.setFill(Color.RED);
-        gc.fillOval(
-                xs.doubleValue(),
-                ys.doubleValue(),
-                D,
-                D
-        );
-
+        gc.setStroke(Color.RED);
+        gc.strokeOval(getxs()-5,getys()-5,D+10,D+10);
+        gc.strokeOval(getxs()+1,getys()+1,1,1);
     }
 
 
@@ -193,17 +188,17 @@ public class Controller implements Runnable{
         try {
 
 
-            Circle circle = new Circle(0,0,5);
+           // Circle circle = new Circle(0,0,5);
             timeline = new Timeline(
 
                     new KeyFrame(Duration.seconds(15000 / Machine.getF()),
-                            new KeyValue(xs, canvas.getWidth() - D),
+                            new KeyValue(xs, canvas.getWidth() - D, Interpolator.TANGENT(Duration.seconds(15000 / Machine.getF()),ys.doubleValue()/xs.doubleValue())),
                             new KeyValue(ys, canvas.getHeight() - D)
 
                     )
             );
         } catch (Exception e) {
-            System.out.println("please enter Feed Rate");
+            System.out.println("please enter Feed Rate"+ e );
         }
 
 
@@ -211,28 +206,24 @@ public class Controller implements Runnable{
         timeline.setCycleCount(1);
 
 
-        timer = new AnimationTimer() {
+
+         timer = new AnimationTimer() {
 
             @Override
             public void handle(long now) {
                 GraphicsContext gc = canvas.getGraphicsContext2D();
                 gc.setFill(Color.GRAY);
                 gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                gc.setFill(Color.RED);
-                gc.fillOval(
-                        xs.doubleValue(),
-                        ys.doubleValue(),
-                        D,
-                        D
-                );
-                setxs(getxs());
-                setys(getys());
+                gc.setStroke(Color.RED);
+
+                gc.strokeOval(getxs()-5,getys()-5,D+10,D+10);
+                gc.strokeOval(getxs()+1,getys()+1,1,1);
 
                 gc.setStroke(Color.GREEN);
                 gc.strokeLine(canvas.getWidth() / 2 - 1, canvas.getHeight() / 2 + 2, canvas.getWidth() / 2 + 5, canvas.getHeight() / 2 + 2);
                 gc.strokeLine(canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 - 1, canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 + 5);
 
-                gc.strokeText(".", getxs(),getys());
+
             }
 
 
@@ -240,9 +231,6 @@ public class Controller implements Runnable{
 
         timeline.play();
         timer.start();
-
-
-
 
 
     }
@@ -266,6 +254,7 @@ public class Controller implements Runnable{
                         D,
                         D
                 );
+                gc.save();
                 gc.setStroke(Color.GREEN);
                 gc.strokeLine(canvas.getWidth() / 2 - 1, canvas.getHeight() / 2 + 2, canvas.getWidth() / 2 + 5, canvas.getHeight() / 2 + 2);
                 gc.strokeLine(canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 - 1, canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 + 5);
@@ -295,9 +284,7 @@ public class Controller implements Runnable{
 
         System.out.println("Paused");
         timeline.pause();
-
-
-
+        timer.stop();
     }
 
     public void StopClicked() {
@@ -305,6 +292,7 @@ public class Controller implements Runnable{
         System.out.println("Program Stopped");
 
         timeline.stop();
+        timer.stop();
         setxs(0);
         setys(0);
     }
