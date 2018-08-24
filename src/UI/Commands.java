@@ -4,11 +4,14 @@ public class Commands {
 
     String Command;
 
-    double F;
-    double X;
-    double Y;
+    double F;   // Feed Rate
+    double Xs;  // start X
+    double Ys;  // start Y
+    double Xe;  // end X
+    double Ye;  // end Y
     double I;
     double J;
+
 
 
     boolean M00 = false; // Program pause
@@ -30,12 +33,20 @@ public class Commands {
         F = f;
     }
 
-    public void setX(double x) {
-        X = x;
+    public void setXs(double xs) {
+        Xs = xs;
     }
 
-    public void setY(double y) {
-        Y = y;
+    public void setXe(double xe) {
+        Xe = xe;
+    }
+
+    public void setYs(double ys) {
+        Ys = ys;
+    }
+
+    public void setYe(double ye) {
+        Ye = ye;
     }
 
     public void setI(double i) {
