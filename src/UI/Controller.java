@@ -11,13 +11,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
 import java.util.ArrayList;
-
-
 import javafx.scene.paint.Color;
 
-
 public class Controller implements Runnable{
-
 
     public Button Start;
     public Button Pause;
@@ -25,7 +21,6 @@ public class Controller implements Runnable{
     public Label CommandLabel;
     public TextArea commandField;
     public Canvas canvas;
-
 
     public ArrayList<Commands> commandsArrayList = new ArrayList<>(); // to save objects created when start button is pressed
 
@@ -42,14 +37,13 @@ public class Controller implements Runnable{
 
     Animation animation ;
 
-
     public double getXe(){return Xe;}
 
     public void setXe(double xe){Xe = xe + (canvas.getWidth()/2);}
 
     public double getYe(){return Ye;}
 
-    public void setYe(double ye){Ye=  (canvas.getHeight()/2) - ye ;}
+    public void setYe(double ye){Ye =  (canvas.getHeight()/2) - ye ;}
 
     public  void setXs(double xs) {
         Xs = (canvas.getWidth()  /2) + xs;
@@ -77,19 +71,12 @@ public class Controller implements Runnable{
         gc.setLineWidth(1);
         gc.strokeLine(canvas.getWidth() / 2 -4, canvas.getHeight() / 2 , canvas.getWidth() / 2 +4, canvas.getHeight() / 2 );
         gc.strokeLine(canvas.getWidth() / 2 , canvas.getHeight() / 2 -4, canvas.getWidth() / 2 , canvas.getHeight() / 2 +4);
-        /*
-        gc.setStroke(Color.RED);
-        gc.strokeOval(getXe()-5,getYe()-5,D+10,D+10);
-        gc.strokeOval(getXe()+1,getYe()+1,1,1); */
-
     }
-
 
     public void StartClicked() throws Exception {
 
         System.out.println("Started");
         System.out.println("Hi Im ");
-
 
         HandleCommandField();
 
@@ -104,10 +91,7 @@ public class Controller implements Runnable{
 
         animation = createPathAnimation(path, Duration.seconds(duration));
         animation.play();
-
-
         }
-
 
     public static class Location {
         double x;
@@ -127,10 +111,6 @@ public class Controller implements Runnable{
     private Animation createPathAnimation(Path path, Duration duration) {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        gc.setStroke(Color.RED);
-        gc.strokeOval(path.layoutXProperty().doubleValue(),path.layoutYProperty().doubleValue(),5,5);
-
 
         Circle pen = new Circle(0, 0, 10, Color.RED);
 
@@ -167,7 +147,6 @@ public class Controller implements Runnable{
                 gc.setLineWidth(1);
                 gc.strokeLine(oldLocation.x, oldLocation.y, x, y);
 
-
                 // update old location with current one
                 oldLocation.x = x;
                 oldLocation.y = y;
@@ -179,8 +158,6 @@ public class Controller implements Runnable{
 
 
     private void drawShapes (){
-
-
 
         for (int i = 1; i<commandsArrayList.size(); i++) {
 
@@ -201,20 +178,19 @@ public class Controller implements Runnable{
 
             } else if (command.getCommand().equals("G02")) {
                 setXe(command.Xe);
-                setYs(command.Ye);
+                setYe(command.Ye);
                 G02 g02 = new G02(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
                 setXs(command.Xe);
                 setYs(command.Ye);
             } else if (command.getCommand().equals("G03")) {
                 setXe(command.Xe);
-                setYs(command.Ye);
+                setYe(command.Ye);
                 G03 g03 = new G03(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
                 setXs(command.Xe);
                 setYs(command.Ye);
             }
         }
     }
-
 
     public void PauseClicked() {
 
@@ -311,7 +287,6 @@ public class Controller implements Runnable{
                   commandsArrayList.add(command);
                 }
           }
-
 
     @Override
     public void run() {

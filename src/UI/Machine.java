@@ -19,7 +19,7 @@ public class Machine {
         private static final double MaxFeedRate1 = 3000; // Max Feed Rate, interpolating with cooling
         private static final double MaxFeedRate2 = 2000; // Max Feed Rate, interpolating without cooling
 
-
+    
         static void setM00(boolean ON){
             boolean M03N = M03;
             boolean M04N = M04;

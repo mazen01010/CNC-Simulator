@@ -1,22 +1,12 @@
 package UI;
 
 import javafx.scene.shape.ArcTo;
-import javafx.scene.shape.Path;
-
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
-import static java.lang.Math.toDegrees;
 
 public class G03 extends geometric {
 
-
-
-
     double R ;
-
-    double theta1 ;
-    double theta2 ;
-    double length;
 
     public G03 (double Xs, double Ys, double Xe, double Ye, double I, double J) {
 
@@ -30,13 +20,6 @@ public class G03 extends geometric {
         double Yc = Ys - J;
 
         R = abs(sqrt( (Xs - Xc )*(Xs - Xc) + (Ys - Yc)*(Ys - Yc)));
-
-        theta1 = toDegrees( Math.acos((Xs - Xc)/R));
-        theta2 = toDegrees( Math.acos((Xe - Xc)/R));
-
-        if (theta1>=theta2){
-            length = theta1 - theta2;
-        }else length = 360 - theta2;
 
         ArcTo arcTo = new ArcTo();
         arcTo.setX(Xc);

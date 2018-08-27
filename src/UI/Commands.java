@@ -12,8 +12,6 @@ public class Commands {
     double I;
     double J;
 
-
-
     boolean M00 = false; // Program pause
     boolean M02 = true; // Program stop
     boolean M03 = false; // Spindle On clockwise
@@ -96,6 +94,5 @@ public class Commands {
     public void setM14(boolean m14) {
         M14 = m14;
     }
-
 
 }

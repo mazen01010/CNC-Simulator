@@ -1,7 +1,6 @@
 package UI;
 
 import javafx.scene.shape.MoveTo;
-import javafx.scene.shape.Path;
 
 public class G00 extends geometric {
 
