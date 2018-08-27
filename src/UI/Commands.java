@@ -29,6 +29,10 @@ public class Commands {
         Command = command;
     }
 
+    public String getCommand() {
+        return Command;
+    }
+
     public void setF(double f) {
         F = f;
     }
@@ -92,4 +96,6 @@ public class Commands {
     public void setM14(boolean m14) {
         M14 = m14;
     }
+
+
 }

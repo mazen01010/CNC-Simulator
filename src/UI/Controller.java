@@ -1,10 +1,8 @@
 package UI;
 
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.animation.*;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -13,13 +11,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.shape.*;
 import javafx.util.Duration;
 import java.util.ArrayList;
-import java.util.Objects;
+
 
 import javafx.scene.paint.Color;
 
 
 public class Controller implements Runnable{
-
 
 
     public Button Start;
@@ -30,65 +27,47 @@ public class Controller implements Runnable{
     public Canvas canvas;
 
 
-
-
     public ArrayList<Commands> commandsArrayList = new ArrayList<>(); // to save objects created when start button is pressed
-
 
     public static final double D = 4;  // diameter.
 
-    DoubleProperty Xe  = new SimpleDoubleProperty();
-    DoubleProperty Ye  = new SimpleDoubleProperty();
+    double Xe;
+    double Ye;
 
     public  double Xs;
     public  double Ys;
 
+    static  Path path = new Path();
+    static long duration;
+
+    Animation animation ;
 
 
+    public double getXe(){return Xe;}
 
+    public void setXe(double xe){Xe = xe + (canvas.getWidth()/2);}
 
-    Duration duration = Duration.seconds(15000 / Machine.getF());
+    public double getYe(){return Ye;}
 
-
-    Timeline timeline = new Timeline();
-    AnimationTimer timer = new AnimationTimer() {
-        @Override
-        public void handle(long now) {
-
-        }
-    };
-
-
-    // Define a getter for the property's value
-    public final double getXe(){return Xe.get();}
-
-    // Define a setter for the property's value
-    public final void setXe(double value){Xe.set(value + canvas.getWidth()/2);}
-
-    // Define a getter for the property itself
-    public DoubleProperty XeProperty() {return Xe;}
-
-    // Define a getter for the property's value
-    public final double getYe(){return Ye.get();}
-
-    // Define a setter for the property's value
-    public final void setYe(double value){Ye.set(value + canvas.getHeight()/2);}
-
-    // Define a getter for the property itself
-    public DoubleProperty YeProperty() {return Ye;}
+    public void setYe(double ye){Ye=  (canvas.getHeight()/2) - ye ;}
 
     public  void setXs(double xs) {
-        Xs = xs;
+        Xs = (canvas.getWidth()  /2) + xs;
     }
 
     public  void setYs(double ys) {
-        Ys = ys;
+        Ys = (canvas.getHeight()  /2) - ys;
+    }
+
+    public double getXs() {
+        return Xs;
+    }
+
+    public double getYs() {
+        return Ys;
     }
 
     public void initialize() {
-
-        setXe(0);
-        setYe(0);
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
@@ -96,15 +75,12 @@ public class Controller implements Runnable{
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.GREEN);
         gc.setLineWidth(1);
-        gc.strokeLine(canvas.getWidth()/2 -1,canvas.getHeight()/2 +2,canvas.getWidth()/2 + 5,canvas.getHeight()/2 +2);
-        gc.strokeLine(canvas.getWidth()/2 +2,canvas.getHeight()/2 -1,canvas.getWidth()/2 +2,canvas.getHeight()/2 +5);
-
+        gc.strokeLine(canvas.getWidth() / 2 -4, canvas.getHeight() / 2 , canvas.getWidth() / 2 +4, canvas.getHeight() / 2 );
+        gc.strokeLine(canvas.getWidth() / 2 , canvas.getHeight() / 2 -4, canvas.getWidth() / 2 , canvas.getHeight() / 2 +4);
+        /*
         gc.setStroke(Color.RED);
         gc.strokeOval(getXe()-5,getYe()-5,D+10,D+10);
-        gc.strokeOval(getXe()+1,getYe()+1,1,1);
-
-
-
+        gc.strokeOval(getXe()+1,getYe()+1,1,1); */
 
     }
 
@@ -117,203 +93,141 @@ public class Controller implements Runnable{
 
         HandleCommandField();
 
-
+        drawShapes();
 
         System.out.println(commandField.getText());
 
         // just for checking... should be deleted after program finished
         Machine.setF(1000);
 
-        Thread thread = new Thread();
+        Path path = createPath();
+
+        animation = createPathAnimation(path, Duration.seconds(duration));
+        animation.play();
 
 
+        }
 
 
-            try {
-
-
-                timeline = new Timeline(
-
-                        new KeyFrame(Duration.seconds(15000 / Machine.getF()),
-                                new KeyValue(Xe, Xs - D    ), // Interpolator.TANGENT(Duration.seconds(15000 / Machine.getF()),Ye.doubleValue()/Xe.doubleValue())
-                                new KeyValue(Ye, Ys - D)
-
-                        )
-                );
-            } catch (Exception e) {
-                System.out.println("please enter Feed Rate"+ e );
-            }
-
-            timeline.setAutoReverse(false);
-            timeline.setCycleCount(1);
-
-
-
-            timer = new AnimationTimer() {
-
-                @Override
-                public void handle(long now) {
-                    GraphicsContext gc = canvas.getGraphicsContext2D();
-
-                    gc.setFill(Color.GRAY);
-                    gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                    gc.setStroke(Color.RED);
-
-                    gc.strokeOval(getXe()-5,getYe()-5,D+10,D+10);
-                    gc.strokeOval(getXe()+1,getYe()+1,1,1);
-
-
-                        gc.strokeLine(canvas.getWidth() / 2, canvas.getHeight() / 2, Xe.doubleValue(), Ye.doubleValue());
-
-                        gc.strokeArc(canvas.getWidth() / 2, canvas.getHeight() / 2, Xe.doubleValue(), Ye.doubleValue(),25,150,ArcType.OPEN);
-
-                    gc.setStroke(Color.GREEN);
-                    gc.strokeLine(canvas.getWidth() / 2 - 1, canvas.getHeight() / 2 + 2, canvas.getWidth() / 2 + 5, canvas.getHeight() / 2 + 2);
-                    gc.strokeLine(canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 - 1, canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 + 5);
-
-
-
-
-                }
-
-
-            };
-
-            timeline.play();
-            timer.start();
-
-
-
-
-
-
-      /* GraphicsContext gc = canvas.getGraphicsContext2D();
-       drawShapes(gc);
-
-       timeline = new create().createTimeLine(Xe,Ye,Xs,Ys);
-
-
-       timer = new create().animationTimer(Xe,Ye,Xs,Ys);
-
-       timeline.setAutoReverse(false);
-       timeline.setCycleCount(1);
-
-       timeline.play();
-       timer.start(); */
-
-
+    public static class Location {
+        double x;
+        double y;
     }
 
-    private GraphicsContext drawShapes ( GraphicsContext gc){
+    private Path createPath() {
+
+        Path path = Controller.path;
+
+        path.setStroke(Color.GRAY);
+        path.setStrokeWidth(1);
+
+        return path;
+    }
+
+    private Animation createPathAnimation(Path path, Duration duration) {
+
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+
+        gc.setStroke(Color.RED);
+        gc.strokeOval(path.layoutXProperty().doubleValue(),path.layoutYProperty().doubleValue(),5,5);
 
 
+        Circle pen = new Circle(0, 0, 10, Color.RED);
+
+        // create path transition
+        PathTransition pathTransition = new PathTransition( duration, path, pen);
+        pathTransition.currentTimeProperty().addListener( new ChangeListener<Duration>() {
+
+            Location oldLocation = null;
+
+            /**
+             * Draw a line from the old location to the new location
+             */
+            @Override
+            public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
+
+                // skip starting at 0/0
+                if( oldValue == Duration.ZERO)
+                    return;
+
+                // get current location
+                double x = pen.getTranslateX();
+                double y = pen.getTranslateY();
+
+                // initialize the location
+                if( oldLocation == null) {
+                    oldLocation = new Location();
+                    oldLocation.x = x;
+                    oldLocation.y = y;
+                    return;
+                }
+
+                // draw line
+                gc.setStroke(Color.BLACK);
+                gc.setLineWidth(1);
+                gc.strokeLine(oldLocation.x, oldLocation.y, x, y);
 
 
-        // create command just for illustration
-        Commands command = new Commands();
-        command.setXs(200);
-        command.setYs(200);
-        command.setXe(400);
-        command.setYe(300);
-        command.setCommand("G01");
-
-        setXs(command.Xs);
-        setYs(command.Ys);
-        setXe(command.Xe);
-        setYe(command.Ye);
-        Machine.setF(1000);
-
-
-       // timeline = new create().createTimeLine(Xe,Ye,Xs,Ys);
-
-
-        //timer = new create().animationTimer(Xe,Ye,Xs,Ys);
-
-
-
-       /* for (int i = 0 ; i <= commandsArrayList.size(); i++){
-            String string =  commandsArrayList.get(i).Command;
-
-            switch (string){
-
-                case "G01":
-
-                    setXs(command.Xs);
-                    setYs(command.Ys);
-                    setXe(command.Xe);
-                    setYe(command.Ye);
-
-
-
-                    //gc.strokeLine(command.Xs,command.Ys,command.Xe,command.Ye);
-
-                    try {
-                    timeline = new Timeline(
-
-                            new KeyFrame(Duration.seconds(15000 / Machine.getF()),
-                                    new KeyValue(Xe, Xs - D /* , Interpolator.TANGENT(Duration.seconds(15000 / Machine.getF()),Ye.doubleValue()/Xe.doubleValue())  ),
-                                    new KeyValue(Ye, Ys - D)
-
-                            )
-                    );
-
-                    } catch (Exception e) {
-                             System.out.println("please enter Feed Rate"+ e );
-                             }
-
-                    timer = new AnimationTimer() {
-
-                        @Override
-                        public void handle(long now) {
-                            //GraphicsContext gc = canvas.getGraphicsContext2D();
-
-                            gc.setFill(Color.GRAY);
-                            gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-                            gc.setStroke(Color.RED);
-
-                            gc.strokeOval(getXe()-5,getYe()-5,D+10,D+10);
-                            gc.strokeOval(getXe()+1,getYe()+1,1,1);
-
-                            //gc.strokeLine(canvas.getWidth()/2,canvas.getHeight()/2,Xe.doubleValue(),Ye.doubleValue());
-
-                            gc.setStroke(Color.GREEN);
-                            gc.strokeLine(canvas.getWidth() / 2 - 1, canvas.getHeight() / 2 + 2, canvas.getWidth() / 2 + 5, canvas.getHeight() / 2 + 2);
-                            gc.strokeLine(canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 - 1, canvas.getWidth() / 2 + 2, canvas.getHeight() / 2 + 5);
-
-                            gc.strokeLine(command.Xs,command.Ys,command.Xe,command.Ye);
-
-                        }
-
-
-                    };
-
+                // update old location with current one
+                oldLocation.x = x;
+                oldLocation.y = y;
             }
-        }*/
-       return gc;
-}
+        });
+
+        return pathTransition;
+    }
+
+
+    private void drawShapes (){
+
+
+
+        for (int i = 1; i<commandsArrayList.size(); i++) {
+
+            Commands  command = commandsArrayList.get(i);
+
+
+            if (command.getCommand().equals("G00") ) {
+                setXs(command.Xe);
+                setYs(command.Ye);
+                G00 g00 = new G00(getXs(),getYs());
+
+            } else if (command.getCommand().equals("G01")) {
+                setXe(command.Xe);
+                setYe(command.Ye);
+                G01 g01 = new G01(getXe(),getYe());
+                setXs(command.Xe);
+                setYs(command.Ye);
+
+            } else if (command.getCommand().equals("G02")) {
+                setXe(command.Xe);
+                setYs(command.Ye);
+                G02 g02 = new G02(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
+                setXs(command.Xe);
+                setYs(command.Ye);
+            } else if (command.getCommand().equals("G03")) {
+                setXe(command.Xe);
+                setYs(command.Ye);
+                G03 g03 = new G03(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
+                setXs(command.Xe);
+                setYs(command.Ye);
+            }
+        }
+    }
 
 
     public void PauseClicked() {
 
         System.out.println("Paused");
-        timeline.pause();
-        timer.stop();
+        animation.pause();
+
     }
 
     public void StopClicked() {
 
         System.out.println("Program Stopped");
-
-        timeline.stop();
-        timer.stop();
-        setXe(0);
-        setYe(0);
+        animation.stop();
     }
-
-    public void commandField() {
-        System.out.println("start method");
-    }
-
 
     public void HandleCommandField(){
 
@@ -397,7 +311,6 @@ public class Controller implements Runnable{
                   commandsArrayList.add(command);
                 }
           }
-
 
 
     @Override

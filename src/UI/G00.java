@@ -1,14 +1,16 @@
 package UI;
 
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+
 public class G00 extends geometric {
 
-    public  void G00(double X, double Y){
+    public  G00(double X, double Y){
         Machine.getMaxFeedRate();
 
+        Controller.duration += (long)  15000/Machine.getMaxFeedRate();
 
-        geometric.X = X;
-        geometric.Y= Y;
+        Controller.path.getElements().add(new MoveTo(X, Y));
 
-        // return new LineTo(geometric.X, geometric.Y);
     }
 }
