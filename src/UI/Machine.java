@@ -3,10 +3,9 @@ package UI;
 public class Machine {
 
     // Created by Mazen
-
         private static boolean interpolation = false;
         private static boolean M00 = false; // Program pause
-        private static boolean M02 = true; // Program stop
+        private static boolean M02 = false; // Program stop
         private static boolean M03 = false; // Spindle On clockwise
         private static boolean M04 = false; // Spindle On counter clockwise
         private static boolean M05 = true; //Spindle Off
@@ -19,7 +18,6 @@ public class Machine {
         private static final double MaxFeedRate1 = 3000; // Max Feed Rate, interpolating with cooling
         private static final double MaxFeedRate2 = 2000; // Max Feed Rate, interpolating without cooling
 
-    
         static void setM00(boolean ON){
             boolean M03N = M03;
             boolean M04N = M04;

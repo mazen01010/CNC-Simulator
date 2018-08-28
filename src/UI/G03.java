@@ -1,5 +1,4 @@
 package UI;
-
 import javafx.scene.shape.ArcTo;
 import static java.lang.Math.abs;
 import static java.lang.Math.sqrt;
@@ -22,13 +21,12 @@ public class G03 extends geometric {
         R = abs(sqrt( (Xs - Xc )*(Xs - Xc) + (Ys - Yc)*(Ys - Yc)));
 
         ArcTo arcTo = new ArcTo();
-        arcTo.setX(Xc);
-        arcTo.setY(Yc);
+        arcTo.setX(Xe);
+        arcTo.setY(Ye);
 
-        arcTo.setRadiusX(-R);
-        arcTo.setRadiusY(-R);
+        arcTo.setRadiusX(R);
+        arcTo.setRadiusY(R);
 
         Controller.path.getElements().add(arcTo);
-
     }
 }

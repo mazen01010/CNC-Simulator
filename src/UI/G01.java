@@ -1,5 +1,4 @@
 package UI;
-
 import javafx.scene.shape.LineTo;
 
 public class G01 extends geometric {
@@ -12,7 +11,5 @@ public class G01 extends geometric {
         Controller.duration += (long)  15000/Machine.getF();
 
         Controller.path.getElements().add(new LineTo(X,Y));
-
     }
-
 }

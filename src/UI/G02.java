@@ -1,12 +1,10 @@
 package UI;
-
 import javafx.scene.shape.ArcTo;
 import static java.lang.Math.*;
 
 public class G02 extends geometric {
 
     double R ;
-
 
     public  G02 (double Xs, double Ys, double Xe, double Ye, double I, double J) {
 
@@ -30,6 +28,5 @@ public class G02 extends geometric {
         arcTo.setSweepFlag(true);
 
         Controller.path.getElements().add(arcTo);
-
     }
 }

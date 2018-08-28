@@ -3,12 +3,14 @@ package UI;
 import javafx.animation.*;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import javafx.scene.paint.Color;
@@ -21,10 +23,10 @@ public class Controller implements Runnable{
     public Label CommandLabel;
     public TextArea commandField;
     public Canvas canvas;
+    public Canvas status;
+
 
     public ArrayList<Commands> commandsArrayList = new ArrayList<>(); // to save objects created when start button is pressed
-
-    public static final double D = 4;  // diameter.
 
     double Xe;
     double Ye;
@@ -36,6 +38,8 @@ public class Controller implements Runnable{
     static long duration;
 
     Animation animation ;
+    Location oldLocation = null;
+
 
     public double getXe(){return Xe;}
 
@@ -64,7 +68,6 @@ public class Controller implements Runnable{
     public void initialize() {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
         gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
         gc.setStroke(Color.GREEN);
@@ -77,21 +80,15 @@ public class Controller implements Runnable{
 
         System.out.println("Started");
         System.out.println("Hi Im ");
-
         HandleCommandField();
-
         drawShapes();
-
         System.out.println(commandField.getText());
-
         // just for checking... should be deleted after program finished
         Machine.setF(1000);
-
         Path path = createPath();
-
         animation = createPathAnimation(path, Duration.seconds(duration));
         animation.play();
-        }
+    }
 
     public static class Location {
         double x;
@@ -101,28 +98,20 @@ public class Controller implements Runnable{
     private Path createPath() {
 
         Path path = Controller.path;
-
         path.setStroke(Color.GRAY);
         path.setStrokeWidth(1);
-
         return path;
     }
 
     private Animation createPathAnimation(Path path, Duration duration) {
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        Circle pen = new Circle(0, 0, 10, Color.RED);
-
+        Circle circle = new Circle(0, 0, 4, Color.RED);
         // create path transition
-        PathTransition pathTransition = new PathTransition( duration, path, pen);
+        PathTransition pathTransition = new PathTransition( duration, path, circle);
         pathTransition.currentTimeProperty().addListener( new ChangeListener<Duration>() {
 
-            Location oldLocation = null;
-
-            /**
-             * Draw a line from the old location to the new location
-             */
+            //Draw a line from the old location to the new location
             @Override
             public void changed(ObservableValue<? extends Duration> observable, Duration oldValue, Duration newValue) {
 
@@ -131,8 +120,8 @@ public class Controller implements Runnable{
                     return;
 
                 // get current location
-                double x = pen.getTranslateX();
-                double y = pen.getTranslateY();
+                double x = circle.getTranslateX();
+                double y = circle.getTranslateY();
 
                 // initialize the location
                 if( oldLocation == null) {
@@ -141,35 +130,48 @@ public class Controller implements Runnable{
                     oldLocation.y = y;
                     return;
                 }
-
                 // draw line
                 gc.setStroke(Color.BLACK);
                 gc.setLineWidth(1);
                 gc.strokeLine(oldLocation.x, oldLocation.y, x, y);
-
                 // update old location with current one
                 oldLocation.x = x;
                 oldLocation.y = y;
             }
         });
-
         return pathTransition;
     }
 
 
     private void drawShapes (){
 
+        status.getGraphicsContext2D().setStroke(Color.RED);
+        status.getGraphicsContext2D().setLineWidth(1);
+        status.getGraphicsContext2D().setFont(Font.font(16));
+        status.getGraphicsContext2D().setTextBaseline(VPos.TOP);
+
         for (int i = 1; i<commandsArrayList.size(); i++) {
 
             Commands  command = commandsArrayList.get(i);
 
-
             if (command.getCommand().equals("G00") ) {
-                setXs(command.Xe);
-                setYs(command.Ye);
-                G00 g00 = new G00(getXs(),getYs());
-
+                    setXs(command.Xe);
+                    setYs(command.Ye);
+                    G00 g00 = new G00(getXs(), getYs());
             } else if (command.getCommand().equals("G01")) {
+                if ( Machine.getM02() == true ){
+                    System.out.println("The program is already stopped");
+                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    break;
+                }else if (Machine.getM00() == true){
+                    System.out.println("please resume the program");
+                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    break;
+                }else if ( Machine.getM05() == true ){
+                    System.out.println("please turn on the spindle");
+                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    break;
+                }else
                 setXe(command.Xe);
                 setYe(command.Ye);
                 G01 g01 = new G01(getXe(),getYe());
@@ -177,17 +179,59 @@ public class Controller implements Runnable{
                 setYs(command.Ye);
 
             } else if (command.getCommand().equals("G02")) {
+                if ( Machine.getM02() == true ){
+                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    break;
+                }else if (Machine.getM00() == true){
+                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    break;
+                }else if ( Machine.getM05() == true ){
+                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    break;
+                }else
                 setXe(command.Xe);
                 setYe(command.Ye);
                 G02 g02 = new G02(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
                 setXs(command.Xe);
                 setYs(command.Ye);
             } else if (command.getCommand().equals("G03")) {
+                if ( Machine.getM02() == true ){
+                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    break;
+                }else if (Machine.getM00() == true){
+                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    break;
+                }else if ( Machine.getM05() == true ){
+                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    break;
+                }else
                 setXe(command.Xe);
                 setYe(command.Ye);
                 G03 g03 = new G03(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
                 setXs(command.Xe);
                 setYs(command.Ye);
+            }else if (command.getCommand().equals("G28")){
+                setXs(0);
+                setYs(0);
+                G28 g28 = new G28(getXs(),getYs());
+            }else if (command.getCommand().contains("M00")){
+                Machine.setM00(true);
+            }else if (command.getCommand().contains("M02")){
+                Machine.setM02(true);
+            }else if (command.getCommand().contains("M03")){
+                Machine.setM03(true);
+            }else if (command.getCommand().contains("M04")){
+                Machine.setM04(true);
+            }else if (command.getCommand().contains("M05")){
+                Machine.setM05(true);
+            }else if (command.getCommand().contains("M08")){
+                Machine.setM08(true);
+            }else if (command.getCommand().contains("M09")){
+                Machine.setM09(true);
+            }else if (command.getCommand().contains("M13")){
+                Machine.setM13(true);
+            }else if (command.getCommand().contains("M14")){
+                Machine.setM14(true);
             }
         }
     }
@@ -195,32 +239,29 @@ public class Controller implements Runnable{
     public void PauseClicked() {
 
         System.out.println("Paused");
+        status.getGraphicsContext2D().strokeText("Status: Program Paused",0,0);
         animation.pause();
-
     }
 
     public void StopClicked() {
 
         System.out.println("Program Stopped");
+        status.getGraphicsContext2D().strokeText("Status: Program Stopped",0,0);
         animation.stop();
     }
 
     public void HandleCommandField(){
 
         String str = commandField.getText();
-
         ArrayList<String> N = new ArrayList<>();
 
         for (String n : str.toUpperCase().split("N")) {
             N.add(n);
         }
 
-
-         for (int i = 0 ; i <N.size(); i++){
+        for (int i = 0 ; i <N.size(); i++){
 
             ArrayList<String> subString = new ArrayList<>();
-
-
             String string = N.get(i);
 
             for (String commandline : string.toUpperCase().split(" ")) {
@@ -237,39 +278,37 @@ public class Controller implements Runnable{
                     field = " ";
                 }
 
-
-                  if (field.charAt(0) == 'G') {
-                    if (field.contains("00")) {
-                        command.setCommand(field);
-                    } else if (field.contains("01")) {
-                        command.setCommand(field);
-                    } else if (field.contains("02")) {
-                        command.setCommand(field);
-                    } else if (field.contains("03")) {
-                        command.setCommand(field);
-                    } else ;
+                   if (field.charAt(0) == 'G') {
+                     if (field.contains("00")) {
+                         command.setCommand(field);
+                     } else if (field.contains("01")) {
+                         command.setCommand(field);
+                     } else if (field.contains("02")) {
+                         command.setCommand(field);
+                     } else if (field.contains("03")) {
+                         command.setCommand(field);
+                     } else ;
                   }
-
 
                   if (field.charAt(0) == 'M'){
                             if (field.contains("00")) {
-                                command.setM00(true);
+                                command.setCommand(field);
                             } else if (field.contains("02")) {
-                                command.setM02(true);
+                                command.setCommand(field);
                             } else if (field.contains("03")) {
-                                command.setM03(true);
+                                command.setCommand(field);
                             } else if (field.contains("04")) {
-                                command.setM04(true);
+                                command.setCommand(field);
                             } else if (field.contains("05")) {
-                                command.setM05(true);
+                                command.setCommand(field);
                             } else if (field.contains("08")) {
-                                command.setM08(true);
+                                command.setCommand(field);
                             } else if (field.contains("09")) {
-                                command.setM09(true);
+                                command.setCommand(field);
                             } else if (field.contains("13")) {
-                                command.setM13(true);
+                                command.setCommand(field);
                             } else if (field.contains("14")) {
-                                command.setM14(true);
+                                command.setCommand(field);
                             }
                   }
 
@@ -292,7 +331,5 @@ public class Controller implements Runnable{
     public void run() {
 
     }
-
-
 }
 
