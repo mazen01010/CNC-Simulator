@@ -9,8 +9,8 @@ public class Commands {
     double Ys;  // start Y
     double Xe;  // end X
     double Ye;  // end Y
-    double I;
-    double J;
+    double I;   // the distance difference between Xs of the arc and X-coordinate of arc center
+    double J;   // the distance difference between Ys of the arc and Y-coordinate of arc center
 
     boolean M00 = false; // Program pause
     boolean M02 = true; // Program stop
@@ -25,7 +25,7 @@ public class Commands {
 
     public void setCommand(String command) {
         Command = command;
-    }
+    } // set command name e.g.: G01
 
     public String getCommand() {
         return Command;
@@ -57,42 +57,6 @@ public class Commands {
 
     public void setJ(double j) {
         J = j;
-    }
-
-    public void setM00(boolean m00) {
-        M00 = m00;
-    }
-
-    public void setM02(boolean m02) {
-        M02 = m02;
-    }
-
-    public void setM03(boolean m03) {
-        M03 = m03;
-    }
-
-    public void setM04(boolean m04) {
-        M04 = m04;
-    }
-
-    public void setM05(boolean m05) {
-        M05 = m05;
-    }
-
-    public void setM08(boolean m08) {
-        M08 = m08;
-    }
-
-    public void setM09(boolean m09) {
-        M09 = m09;
-    }
-
-    public void setM13(boolean m13) {
-        M13 = m13;
-    }
-
-    public void setM14(boolean m14) {
-        M14 = m14;
     }
 
 }

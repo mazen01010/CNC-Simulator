@@ -11,6 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.shape.*;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontSmoothingType;
 import javafx.util.Duration;
 import java.util.ArrayList;
 import javafx.scene.paint.Color;
@@ -21,21 +22,22 @@ public class Controller implements Runnable{
     public Button Pause;
     public Button Stop;
     public Label CommandLabel;
-    public TextArea commandField;
-    public Canvas canvas;
-    public Canvas status;
+    public TextArea commandField; // to write M- and G-Codes
+    public Canvas canvas; // main display of simulator
+    public Canvas status; // to display status of operations
 
 
     public ArrayList<Commands> commandsArrayList = new ArrayList<>(); // to save objects created when start button is pressed
 
-    double Xe;
-    double Ye;
+    double Xe; // end X coordinate
+    double Ye; // end Y coordinate
 
-    public  double Xs;
-    public  double Ys;
+    public  double Xs;  // start X coordinate
+    public  double Ys;  // start Y coordinate
 
     static  Path path = new Path();
     static long duration;
+    Duration durationNew = new Duration(duration);
 
     Animation animation ;
     Location oldLocation = null;
@@ -66,7 +68,7 @@ public class Controller implements Runnable{
     }
 
     public void initialize() {
-
+        // initialize the main display
         GraphicsContext gc = canvas.getGraphicsContext2D();
         gc.setFill(Color.GRAY);
         gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
@@ -78,16 +80,21 @@ public class Controller implements Runnable{
 
     public void StartClicked() throws Exception {
 
-        System.out.println("Started");
-        System.out.println("Hi Im ");
-        HandleCommandField();
-        drawShapes();
-        System.out.println(commandField.getText());
-        // just for checking... should be deleted after program finished
-        Machine.setF(1000);
-        Path path = createPath();
-        animation = createPathAnimation(path, Duration.seconds(duration));
-        animation.play();
+        int i =0;
+        if (i == 0 ) {
+            System.out.println("Started");
+            HandleCommandField();
+            drawShapes();
+            System.out.println(commandField.getText());
+            // just for checking... should be deleted after program finished
+            Machine.setF(1000);
+            Path path = createPath();
+            animation = createPathAnimation(path, Duration.seconds(duration));
+            animation.play();
+            i++;
+        }else
+            animation.jumpTo(animation.getCurrentTime());
+            animation.playFrom(durationNew);
     }
 
     public static class Location {
@@ -107,6 +114,8 @@ public class Controller implements Runnable{
 
         GraphicsContext gc = canvas.getGraphicsContext2D();
         Circle circle = new Circle(0, 0, 4, Color.RED);
+        circle.toFront();
+
         // create path transition
         PathTransition pathTransition = new PathTransition( duration, path, circle);
         pathTransition.currentTimeProperty().addListener( new ChangeListener<Duration>() {
@@ -137,17 +146,24 @@ public class Controller implements Runnable{
                 // update old location with current one
                 oldLocation.x = x;
                 oldLocation.y = y;
+                String X = "1";
+                String Y = "1";
+                X.equals(x);
+                Y.equals(y);
             }
         });
         return pathTransition;
     }
 
-
+    /*   this method loops on the commandArrayList to create objects related to commands or change the Machine status
+         that have been written in the CommandField.
+         it also checks Machine status and stops the program if any wrong command have been written */
     private void drawShapes (){
+        // settings for status canvas
 
-        status.getGraphicsContext2D().setStroke(Color.RED);
-        status.getGraphicsContext2D().setLineWidth(1);
-        status.getGraphicsContext2D().setFont(Font.font(16));
+        status.getGraphicsContext2D().setFill(Color.RED);
+        status.getGraphicsContext2D().setFontSmoothingType(FontSmoothingType.LCD);
+        status.getGraphicsContext2D().setFont(Font.font(12));
         status.getGraphicsContext2D().setTextBaseline(VPos.TOP);
 
         for (int i = 1; i<commandsArrayList.size(); i++) {
@@ -160,16 +176,19 @@ public class Controller implements Runnable{
                     G00 g00 = new G00(getXs(), getYs());
             } else if (command.getCommand().equals("G01")) {
                 if ( Machine.getM02() == true ){
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
                     System.out.println("The program is already stopped");
-                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    status.getGraphicsContext2D().fillText("Status: The program is already stopped",0,0);
                     break;
                 }else if (Machine.getM00() == true){
                     System.out.println("please resume the program");
-                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please resume the program",0,0);
                     break;
                 }else if ( Machine.getM05() == true ){
                     System.out.println("please turn on the spindle");
-                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please turn on the spindle",0,0);
                     break;
                 }else
                 setXe(command.Xe);
@@ -180,13 +199,16 @@ public class Controller implements Runnable{
 
             } else if (command.getCommand().equals("G02")) {
                 if ( Machine.getM02() == true ){
-                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: The program is already stopped",0,0);
                     break;
                 }else if (Machine.getM00() == true){
-                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please resume the program",0,0);
                     break;
                 }else if ( Machine.getM05() == true ){
-                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please turn on the spindle",0,0);
                     break;
                 }else
                 setXe(command.Xe);
@@ -196,13 +218,16 @@ public class Controller implements Runnable{
                 setYs(command.Ye);
             } else if (command.getCommand().equals("G03")) {
                 if ( Machine.getM02() == true ){
-                    status.getGraphicsContext2D().strokeText("Status: The program is already stopped",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: The program is already stopped",0,0);
                     break;
                 }else if (Machine.getM00() == true){
-                    status.getGraphicsContext2D().strokeText("Status: please resume the program",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please resume the program",0,0);
                     break;
                 }else if ( Machine.getM05() == true ){
-                    status.getGraphicsContext2D().strokeText("Status: please turn on the spindle",0,0);
+                    status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+                    status.getGraphicsContext2D().fillText("Status: please turn on the spindle",0,0);
                     break;
                 }else
                 setXe(command.Xe);
@@ -210,7 +235,7 @@ public class Controller implements Runnable{
                 G03 g03 = new G03(getXs(),getYs(),getXe(),getYe(),command.I,command.J);
                 setXs(command.Xe);
                 setYs(command.Ye);
-            }else if (command.getCommand().equals("G28")){
+            }else if (command.getCommand().contains("G28")){
                 setXs(0);
                 setYs(0);
                 G28 g28 = new G28(getXs(),getYs());
@@ -235,21 +260,30 @@ public class Controller implements Runnable{
             }
         }
     }
-
-    public void PauseClicked() {
+    /* handles Pause button */
+    public void PauseClicked() throws Exception {
 
         System.out.println("Paused");
-        status.getGraphicsContext2D().strokeText("Status: Program Paused",0,0);
-        animation.pause();
-    }
+        status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+        status.getGraphicsContext2D().fillText("Status: Program Paused",0,0);
 
+        durationNew = animation.getCurrentTime();
+            animation.pause();
+
+    }
+    /*handles Stop button */
     public void StopClicked() {
 
         System.out.println("Program Stopped");
-        status.getGraphicsContext2D().strokeText("Status: Program Stopped",0,0);
+        status.getGraphicsContext2D().clearRect(0,0,canvas.getWidth(),canvas.getHeight());
+        status.getGraphicsContext2D().fillText("Status: Program Stopped",0,0);
         animation.stop();
+        commandsArrayList.clear();
+        path.getElements().clear();
     }
-
+    /*This method should loop on CommandField and handle the text have been written and
+     * create respective commands then add commands to commandsArrayList.
+     * line numbers are ignored therefor lines are being executed sequentially */
     public void HandleCommandField(){
 
         String str = commandField.getText();

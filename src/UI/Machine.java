@@ -1,5 +1,6 @@
 package UI;
 
+/*This class handles changes in Machine status*/
 public class Machine {
 
     // Created by Mazen
